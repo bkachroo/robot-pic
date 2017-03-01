@@ -1,0 +1,880 @@
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001         list P=PIC16F877, F=INHX8M, C=160, N=80, ST=OFF, MM=OFF, R=DEC
+                      00002         include "P16F877.INC"
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Dec 08 2015
+                      00005 ;  MPASM PIC16F877 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2015 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      00541         LIST
+2007   3F32           00003         __config ( _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_ON & _HS_OSC & _WRT_ENABLE_ON & _LVP_OFF & _DEBUG_OFF & _CPD_OFF )
+                      00004         errorlevel -302         ;ignore error when storing to bank1
+                      00005         
+                      00006 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00007         ; Variables
+                      00008 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00009         ; first define sensors
+                      00010 #define HEIGHT  PORTA, 0    ; barrel height input, 0 = low, 1 = high
+                      00011 #define STRIP0  PORTA, 1    ; strip height inputs, 00 = empty, 01 = middle,
+                      00012 #define STRIP1  PORTA, 2    ; 1x = full
+                      00013 #define BARREL  PORTB, 0    ; Barrel proximity sensor, interrupts on rising edge
+                      00014 #define COL     PORTB, 4    ; Column proximity sensor, interrupts
+                      00015         ; define motor outputs
+                      00016 #define LEFTE   PORTC, 0    ; Left base motor enable bit
+                      00017 #define LEFTD   PORTC, 1    ; Left base motor direction bit (forward/reverse)
+                      00018 #define RIGHTE  PORTC, 2    ; Right base motor enable bit
+                      00019 #define RIGHTD  PORTC, 3    ; Right base motor direction bit
+                      00020 #define ARME    PORTC, 4    ; Arm motor enable bit
+                      00021 #define ARMD    PORTC, 6    ; Arm motor direction bit (RC5 is weird)
+                      00022         ; define LCD outputs
+                      00023 #define RS      PORTD, 2
+                      00024 #define E       PORTD, 3
+                      00025         ; constants for timing
+  0000003D            00026 ARMTIME equ     D'61'       ; Arm timer constant: 0.0262*61 = 1.51 sec
+  00000003            00027 ARMTIME2 equ    D'3'        ; Just the real arm time*2 for the optime
+  00000026            00028 TURNTIME equ    D'38'       ; First turn constant for exit 0.0262*38= 1.0 sec
+  00000026            00029 REV1TIME equ    D'38'       ; Constant for first exit reverse
+  000000BE            00030 REV2TIME equ    D'190'      ; Constant for second exit reverse
+  0000006A            00031 T1PADL  equ     0x6A        ; Padding constant so TMR1 has 0.5 sec period, low
+  00000067            00032 T1PADH  equ     0x67        ; high byte
+                      00033         ;variables for timing
+  00000020            00034 T0CNT   equ     0x20        ; location of TMR0 high-level count register
+  00000021            00035 T1CNTL  equ     0x21        ; location of TRM1 high-level count register, low
+  00000022            00036 T1CNTH  equ     0x22        ; location of high byte
+                      00037         ; variables for interrupts
+  00000023            00038 TEMP_W      equ 0x23
+  00000024            00039 TEMP_STATUS equ 0x24
+                      00040         ; variables for LCD
+  00000025            00041 COM     equ     0x25        ; buffer for instruction
+  00000026            00042 DAT     equ     0x26        ; buffer for data
+  00000027            00043 d1      equ     0x27
+  00000028            00044 d2      equ     0x28
+  00000029            00045 COUNTER equ     0x29
+                      00046         ; variables for barrel data
+  00000001            00047 SPEED   equ     D'1'        ; speed of motion in cm/sec
+  00000030            00048 TEMP1   equ     0x30        ; a useful second working register
+  00000031            00049 TEMP2   equ     0x31
+  00000032            00050 TEMP3   equ     0x32
+  00000033            00051 TEMP4   equ     0x33
+  00000034            00052 TEMP5   equ     0x34
+  00000035            00053 COUNTB  equ     0x35
+  00000036            00054 NUM_TALL equ    0x36        ; number of tall barrels
+  00000037            00055 NUM_B   equ     0x37        ; SET THIS!!
+                      00056         
+                      00057 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00058         ; Vectors
+                      00059 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00060         org 0x0000
+0000   2???           00061         goto    Init        
+                      00062         org 0x0004
+0004   00A3           00063         movwf   TEMP_W          ; save context
+0005   0803           00064         movf    STATUS,W
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0006   00A4           00065         movwf   TEMP_STATUS
+                      00066         
+0007   2???           00067         call    ISR     
+                      00068         
+0008   0824           00069         movf    TEMP_STATUS, W  ; restore context
+0009   0083           00070         movwf   STATUS
+000A   0823           00071         movf    TEMP_W, W
+000B   0009           00072         retfie
+                      00073         
+                      00074 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00075         ; TABLES ;
+                      00076 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+000C                  00077 Optime
+000C   0782           00078         addwf   PCL, F
+000D   3446 3469 346E 00079         dt      "Finished. Operation Time: ", 0
+       3469 3473 3468 
+       3465 3464 342E 
+       3420 344F 3470 
+       3465 3472 3461 
+       3474 3469 346F 
+       346E 3420 3454 
+       3469 346D 3465 
+       343A 3420 3400 
+                      00080 
+0028                  00081 Seconds
+0028   0782           00082         addwf   PCL, F
+0029   3420 3473 3465 00083         dt      " secs ", 0
+       3463 3473 3420 
+       3400 
+                      00084 
+0030                  00085 Bar_Num
+0030   0782           00086         addwf   PCL, F
+0031   344E 3475 346D 00087         dt      "Number of barrels: ", 0
+       3462 3465 3472 
+       3420 346F 3466 
+       3420 3462 3461 
+       3472 3472 3465 
+       346C 3473 343A 
+       3420 3400 
+                      00088 
+0045                  00089 Tall_B_Num
+0045   0782           00090         addwf   PCL, F
+0046   3454 3461 346C 00091         dt      "Tall Barrels: ", 0
+       346C 3420 3442 
+       3461 3472 3472 
+       3465 346C 3473 
+       343A 3420 3400 
+                      00092 
+0055                  00093 Short_B_Num
+0055   0782           00094         addwf   PCL, F
+0056   3453 3468 346F 00095         dt      "Short Barrels: ", 0
+       3472 3474 3420 
+       3442 3461 3472 
+       3472 3465 346C 
+       3473 343A 3420 
+       3400 
+                      00096 
+0066                  00097 Distance
+0066   0782           00098         addwf   PCL, F
+0067   3478 343D 3400 00099         dt      "x=", 0
+                      00100 
+006A                  00101 Centi
+006A   0782           00102         addwf   PCL, F
+006B   3420 3463 346D 00103         dt      " cm: ", 0
+       343A 3420 3400 
+                      00104 
+0071                  00105 Tall
+0071   0782           00106         addwf   PCL, F
+0072   3454 3461 346C 00107         dt      "Tall, ", 0
+       346C 342C 3420 
+       3400 
+                      00108 
+0079                  00109 Short   
+0079   0782           00110         addwf   PCL, F
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+007A   3453 3468 346F 00111         dt      "Short, ", 0
+       3472 3474 342C 
+       3420 3400 
+                      00112 
+0082                  00113 Full
+0082   0782           00114         addwf   PCL, F
+0083   3446 3475 346C 00115         dt      "Full", 0
+       346C 3400 
+                      00116 
+0088                  00117 Middle  
+0088   0782           00118         addwf   PCL, F
+0089   344D 3469 3464 00119         dt      "Middle", 0
+       3464 346C 3465 
+       3400 
+                      00120 
+0090                  00121 Empty   
+0090   0782           00122         addwf   PCL, F
+0091   3445 346D 3470 00123         dt      "Empty", 0
+       3474 3479 3400 
+0097                  00124 All_Done
+0097   0782           00125         addwf   PCL, F
+0098   3441 346C 346C 00126         dt      "All done.", 0
+       3420 3464 346F 
+       346E 3465 342E 
+       3400 
+                      00127 
+                      00128 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00129         ; MACROS ;
+                      00130 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00131 Display macro   Message         ; this macro works through a table to LCD
+                      00132         local   loop_
+                      00133         local   end_
+                      00134         clrf    COUNTER         ; as a counter
+                      00135         clrw
+                      00136 loop_   movf    COUNTER, W
+                      00137         call    Message
+                      00138         xorlw   B'00000000'
+                      00139         btfsc   STATUS, Z
+                      00140         goto    end_
+                      00141         call    WR_DATA
+                      00142         incf    COUNTER
+                      00143         goto    loop_
+                      00144 end_    
+                      00145         endm
+                      00146 
+                      00147 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;    
+                      00148         ; INITIALIZATION
+                      00149 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00150         ; note, interrupts can't be initialized yet because they would
+                      00151         ; interefere with standby polling (RB4=COL is also keypad)
+                      00152 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00153         ; Initialize Ports
+                      00154 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00A2   1683           00155 Init    bsf     STATUS, RP0     ; go to bank 1
+                      00156         ; Initialize inputs
+00A3   30FF           00157         movlw   B'11111111'     ; set PORTB to input (keypad)
+00A4   0086           00158         movwf   TRISB
+00A5   30FF           00159         movlw   B'11111111'     ; set PORTA to input (sensors)
+00A6   0085           00160         movwf   TRISA
+00A7   3007           00161         movlw   B'00000111'     ; set PORTA to digital input
+00A8   009F           00162         movwf   ADCON1
+                      00163         ; Initialize outputs
+00A9   3000           00164         movlw   B'00000000'     ; set PORTC to output (motors)
+00AA   0087           00165         movwf   TRISC
+00AB   3000           00166         movlw   B'00000000'     ; set PORTD to output (LCD)
+00AC   0088           00167         movwf   TRISD
+00AD   1283           00168         bcf     STATUS, RP0     ; go to bank 0
+00AE   0187           00169         clrf    PORTC           ; clear to prevent motors starting by accident
+                      00170 
+                      00171 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00172         ; Standby
+                      00173 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00AF   2???           00174         call Wait_K
+                      00175         
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00176 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00177         ; Initialize Interrupts/Timers
+                      00178 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00B0   1683           00179 In_Int  bsf     STATUS, RP0     ; go to bank 1
+00B1   3047           00180         movlw   B'01000111'     ; interrupt only on rising edge of BARREL and
+00B2   0081           00181         movwf   OPTION_REG      ; set TMR0 to overflow period = 0.0262 sec
+00B3   0186           00182         clrf    TRISB           ; clear PORTB manually because the keypad 
+                      00183         ; messes it up
+00B4   1283           00184         bcf     STATUS, RP0     ; go to bank 0
+00B5   0186           00185         clrf    PORTB   
+00B6   1683           00186         bsf     STATUS, RP0
+00B7   30FF           00187         movlw   B'11111111'
+00B8   0086           00188         movwf   TRISB
+00B9   1283           00189         bcf     STATUS, RP0     ; finished clearing PORTB
+00BA   3098           00190         movlw   B'10011000'     ; enable only BARREL and COL interrupts, none
+00BB   008B           00191         movwf   INTCON          ; from timers
+                      00192         ; note: even though timer interrupts are not on, their flags are still
+                      00193         ; set on overflow
+00BC   306A           00194         movlw   T1PADL          ; put initial pad in TMR1 so it has the exact
+00BD   008E           00195         movwf   TMR1L           ; right period
+00BE   3067           00196         movlw   T1PADH
+00BF   008F           00197         movwf   TMR1H
+00C0   3031           00198         movlw   B'00110001'     ; set TMR1 to overflow period = 0.125 sec
+00C1   0090           00199         movwf   T1CON           ; and start TMR1
+                      00200 
+                      00201 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00202         ; Start Motors
+                      00203 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+00C2   3005           00204 Start_M movlw   B'00000101'     ; mask for PORTC, enable base motors and move
+00C3   0087           00205         movwf   PORTC           ; forward
+                      00206         
+                      00207 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00208         ; MAIN ROUTINES ;
+                      00209 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00210         
+                      00211 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;       
+                      00212         ; Main Loop
+                      00213 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00214         ; note: This works by waiting for interrupts while polling the
+                      00215         ; timer overflow flag, PIR1, TMR1IF, and restarting the timer with
+                      00216         ; the constant padding
+00C4   1C0C           00217 Main    btfss   PIR1, TMR1IF    ; poll TMR1 overflow flag
+00C5   2???           00218         goto    Main            ; if not loop
+00C6                  00219 Reset_Timer
+                      00220         ; note: adding the padding instead of just moving it is important
+                      00221         ; because the barrel interrupt might allow the timer to overflow 
+                      00222         ; and increment to an appreciable value, so wiping would underestimate
+                      00223         ; time elapsed. All assuming the timer continue to counts after 
+                      00224         ; overflow. As long as the time elapsed during the barrel subroutine
+                      00225         ; is less than the timer period minus padding, even an interrupt during
+                      00226         ; this reset routine won't mess up the timing.
+00C6   100C           00227         bcf     PIR1, TMR1IF    ; clear the interrupt flag
+00C7   0AA1           00228         incf    T1CNTL, F       ; increment high-level count low byte
+00C8   1903           00229         btfsc   STATUS, Z       ; if it overflows
+00C9   0AA2           00230         incf    T1CNTH, F       ; increment the high byte
+00CA   306A           00231         movlw   T1PADL          ; get padding low byte
+Message[305]: Using default destination of 1 (file).
+00CB   078E           00232         addwf   TMR1L           ; add to Timer1 low byte
+00CC   1803           00233         btfsc   STATUS,C        ; Check for carry
+00CD   0A8F           00234         incf    TMR1H, F        ; if so add to Timer1 high byte
+00CE   3067           00235         movlw   T1PADH          ; get high byte
+Message[305]: Using default destination of 1 (file).
+00CF   078F           00236         addwf   TMR1H           ; add to Timer1 high byte
+                      00237         ;;;
+00D0   1BA1           00238         btfsc   T1CNTL, 7
+00D1   2???           00239         goto $+2
+                      00240         ;;;
+00D2   2???           00241         goto    Main            ; back to waiting
+                      00242 
+                      00243 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00244         ; Exit Routine
+                      00245 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00246         ; Disable all interrupts (they might misfire)
+                      00247         
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00248 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00249         ; Display Loop
+                      00250 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00251 
+                      00252 ; Initialize the LCD ;;;;;;;;;;;;;;;;;;
+00D3   3033           00253         movlw   B'00110011'
+00D4   2???           00254         call    WR_INS
+00D5   3032           00255         movlw   B'00110010'
+00D6   2???           00256         call    WR_INS
+00D7   3028           00257         movlw   B'00101000'
+00D8   2???           00258         call    WR_INS
+00D9   300C           00259         movlw   B'00001100'
+00DA   2???           00260         call    WR_INS
+00DB   3006           00261         movlw   B'00000110'
+00DC   2???           00262         call    WR_INS
+00DD   3001           00263         movlw   B'00000001'
+00DE   2???           00264         call    WR_INS
+                      00265 
+                      00266 ; Display Message ;;;;;;;;;;;;;;;;;;;;;;
+                      00267         ; display the operation time
+                      00268         ; take total T1 time in seconds
+00DF   0822           00269         movf    T1CNTH, W       ; all to divide by 8 and fit into one byte
+00E0   00B1           00270         movwf   TEMP2
+00E1   0821           00271         movf    T1CNTL, W
+00E2   00B0           00272         movwf   TEMP1
+00E3   1003           00273         bcf     STATUS, C
+00E4   0CB1           00274         rrf     TEMP2, F
+00E5   0CB0           00275         rrf     TEMP1, F
+00E6   0CB1           00276         rrf     TEMP2, F
+00E7   0CB0           00277         rrf     TEMP1, F
+00E8   0CB1           00278         rrf     TEMP2, F
+00E9   0CB0           00279         rrf     TEMP1, F        ; ends with time in secs
+00EA   3003           00280         movlw   ARMTIME2        ; add stationary times with arms moving
+00EB   07B0           00281         addwf   TEMP1, F
+00EC   01B1           00282         clrf    TEMP2           ; should be clear anyway
+00ED   2???           00283         call    bin2dec999      ; convert to ASCII digits (3)
+                      00284         Display Optime          ; write 'Operation Time'
+  0000                    M         local   loop_
+  0000                    M         local   end_
+00EE   01A9               M         clrf    COUNTER         ; as a counter
+00EF   0103               M         clrw
+00F0   0829               M loop_   movf    COUNTER, W
+00F1   2???               M         call    Optime
+00F2   3A00               M         xorlw   B'00000000'
+00F3   1903               M         btfsc   STATUS, Z
+00F4   2???               M         goto    end_
+00F5   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+00F6   0AA9               M         incf    COUNTER
+00F7   2???               M         goto    loop_
+00F8                      M end_    
+00F8   0834           00285         movf    TEMP5, W        ; write from greatest to least to LCD
+00F9   2???           00286         call    WR_DATA
+00FA   0833           00287         movf    TEMP4, W
+00FB   2???           00288         call    WR_DATA
+00FC   0832           00289         movf    TEMP3, W
+00FD   2???           00290         call    WR_DATA
+                      00291         Display Seconds         ; add units
+  0000                    M         local   loop_
+  0000                    M         local   end_
+00FE   01A9               M         clrf    COUNTER         ; as a counter
+00FF   0103               M         clrw
+0100   0829               M loop_   movf    COUNTER, W
+0101   2???               M         call    Seconds
+0102   3A00               M         xorlw   B'00000000'
+0103   1903               M         btfsc   STATUS, Z
+0104   2???               M         goto    end_
+0105   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+0106   0AA9               M         incf    COUNTER
+0107   2???               M         goto    loop_
+0108                      M end_    
+0108   2???           00292         call Wait_K
+                      00293         ; display the number of barrels
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0109   3001           00294         movlw   B'00000001'     ; clear LCD
+010A   2???           00295         call    WR_INS
+010B   0837           00296         movf    NUM_B, W        ; convert barrel number to ASCII
+010C   00B0           00297         movwf   TEMP1
+010D   2???           00298         call    bin2dec999
+                      00299         Display Bar_Num         ; write 'Number of Barrels'
+  0000                    M         local   loop_
+  0000                    M         local   end_
+010E   01A9               M         clrf    COUNTER         ; as a counter
+010F   0103               M         clrw
+0110   0829               M loop_   movf    COUNTER, W
+0111   2???               M         call    Bar_Num
+0112   3A00               M         xorlw   B'00000000'
+0113   1903               M         btfsc   STATUS, Z
+0114   2???               M         goto    end_
+0115   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+0116   0AA9               M         incf    COUNTER
+0117   2???               M         goto    loop_
+0118                      M end_    
+0118   0833           00300         movf    TEMP4, W
+0119   2???           00301         call    WR_DATA
+011A   0832           00302         movf    TEMP3, W
+011B   2???           00303         call    WR_DATA         ; put barrel number
+011C   2???           00304         call    Wait_K
+                      00305         ; display the number of tall and short barrels
+011D   3001           00306         movlw   B'00000001'     ; clear LCD
+011E   2???           00307         call    WR_INS
+011F   0836           00308         movf    NUM_TALL, W     ; convert barrel number to ASCII
+0120   00B0           00309         movwf   TEMP1
+0121   2???           00310         call    bin2dec999
+                      00311         Display Tall_B_Num
+  0000                    M         local   loop_
+  0000                    M         local   end_
+0122   01A9               M         clrf    COUNTER         ; as a counter
+0123   0103               M         clrw
+0124   0829               M loop_   movf    COUNTER, W
+0125   2???               M         call    Tall_B_Num
+0126   3A00               M         xorlw   B'00000000'
+0127   1903               M         btfsc   STATUS, Z
+0128   2???               M         goto    end_
+0129   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+012A   0AA9               M         incf    COUNTER
+012B   2???               M         goto    loop_
+012C                      M end_    
+012C   0833           00312         movf    TEMP4, W
+012D   2???           00313         call    WR_DATA
+012E   0832           00314         movf    TEMP3, W
+012F   2???           00315         call    WR_DATA         ; put barrel number
+0130   2???           00316         call    Wait_K
+0131   3001           00317         movlw   B'00000001'     ; clear LCD
+0132   2???           00318         call    WR_INS
+0133   0837           00319         movf    NUM_B, W        ; convert barrel number to ASCII, after subtract
+0134   00B0           00320         movwf   TEMP1
+0135   0836           00321         movf    NUM_TALL, W
+0136   02B0           00322         subwf   TEMP1, F
+0137   2???           00323         call    bin2dec999
+                      00324         Display Short_B_Num
+  0000                    M         local   loop_
+  0000                    M         local   end_
+0138   01A9               M         clrf    COUNTER         ; as a counter
+0139   0103               M         clrw
+013A   0829               M loop_   movf    COUNTER, W
+013B   2???               M         call    Short_B_Num
+013C   3A00               M         xorlw   B'00000000'
+013D   1903               M         btfsc   STATUS, Z
+013E   2???               M         goto    end_
+013F   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+0140   0AA9               M         incf    COUNTER
+0141   2???               M         goto    loop_
+0142                      M end_    
+0142   0833           00325         movf    TEMP4, W
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0143   2???           00326         call    WR_DATA
+0144   0832           00327         movf    TEMP3, W
+0145   2???           00328         call    WR_DATA         ; put barrel number
+0146   2???           00329         call    Wait_K
+                      00330         ; display the barrel data: distance, type, height
+0147   3037           00331         movlw   NUM_B           ; put the literal initial address in FSR
+0148   0084           00332         movwf   FSR
+0149   0A84           00333         incf    FSR, F          ; go to first entry
+014A   3001           00334         movlw   B'1'
+014B   00B5           00335         movwf   COUNTB          ; start counter with 1
+014C                  00336 Disp_Loop
+014C   0A84           00337         incf    FSR, F
+014D   3001           00338         movlw   B'00000001'     ; clear LCD
+014E   2???           00339         call    WR_INS
+014F   0800           00340         movf    INDF, W         ; convert barrel number to ASCII, low
+0150   00B0           00341         movwf   TEMP1
+0151   0A84           00342         incf    FSR, F          ; high
+0152   0800           00343         movf    INDF, W
+0153   00B1           00344         movwf   TEMP2
+0154   300F           00345         movlw   B'00001111'     ; get rid of sensor data
+0155   05B1           00346         andwf   TEMP2, F
+0156   2???           00347         call    bin2dec999
+                      00348         Display Distance
+  0000                    M         local   loop_
+  0000                    M         local   end_
+0157   01A9               M         clrf    COUNTER         ; as a counter
+0158   0103               M         clrw
+0159   0829               M loop_   movf    COUNTER, W
+015A   2???               M         call    Distance
+015B   3A00               M         xorlw   B'00000000'
+015C   1903               M         btfsc   STATUS, Z
+015D   2???               M         goto    end_
+015E   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+015F   0AA9               M         incf    COUNTER
+0160   2???               M         goto    loop_
+0161                      M end_    
+0161   0834           00349         movf    TEMP5, W
+0162   2???           00350         call    WR_DATA
+0163   0833           00351         movf    TEMP4, W
+0164   2???           00352         call    WR_DATA
+0165   0832           00353         movf    TEMP3, W
+0166   2???           00354         call    WR_DATA         ; put distance
+                      00355         Display Centi
+  0000                    M         local   loop_
+  0000                    M         local   end_
+0167   01A9               M         clrf    COUNTER         ; as a counter
+0168   0103               M         clrw
+0169   0829               M loop_   movf    COUNTER, W
+016A   2???               M         call    Centi
+016B   3A00               M         xorlw   B'00000000'
+016C   1903               M         btfsc   STATUS, Z
+016D   2???               M         goto    end_
+016E   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+016F   0AA9               M         incf    COUNTER
+0170   2???               M         goto    loop_
+0171                      M end_    
+0171   1E00           00356         btfss   INDF, 4         ; read barrel type
+0172   2???           00357         goto    DShort          ; if short, say short
+                      00358         Display Tall            ; else say tall
+  0000                    M         local   loop_
+  0000                    M         local   end_
+0173   01A9               M         clrf    COUNTER         ; as a counter
+0174   0103               M         clrw
+0175   0829               M loop_   movf    COUNTER, W
+0176   2???               M         call    Tall
+0177   3A00               M         xorlw   B'00000000'
+0178   1903               M         btfsc   STATUS, Z
+0179   2???               M         goto    end_
+017A   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+017B   0AA9               M         incf    COUNTER
+017C   2???               M         goto    loop_
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+017D                      M end_    
+017D   2???           00359         goto    $+2
+                      00360 DShort  Display Short
+  0000                    M         local   loop_
+  0000                    M         local   end_
+017E   01A9               M         clrf    COUNTER         ; as a counter
+017F   0103               M         clrw
+0180   0829               M loop_   movf    COUNTER, W
+0181   2???               M         call    Short
+0182   3A00               M         xorlw   B'00000000'
+0183   1903               M         btfsc   STATUS, Z
+0184   2???               M         goto    end_
+0185   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+0186   0AA9               M         incf    COUNTER
+0187   2???               M         goto    loop_
+0188                      M end_    
+0188   1B00           00361         btfsc   INDF, 6         ; read barrel strip height
+0189   2???           00362         goto    DFull           ; display appropriate height
+018A   1E80           00363         btfss   INDF, 5
+018B   2???           00364         goto    DEmpty
+                      00365         Display Middle
+  0000                    M         local   loop_
+  0000                    M         local   end_
+018C   01A9               M         clrf    COUNTER         ; as a counter
+018D   0103               M         clrw
+018E   0829               M loop_   movf    COUNTER, W
+018F   2???               M         call    Middle
+0190   3A00               M         xorlw   B'00000000'
+0191   1903               M         btfsc   STATUS, Z
+0192   2???               M         goto    end_
+0193   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+0194   0AA9               M         incf    COUNTER
+0195   2???               M         goto    loop_
+0196                      M end_    
+0196   2???           00366         goto    $+4
+                      00367 DEmpty  Display Empty
+  0000                    M         local   loop_
+  0000                    M         local   end_
+0197   01A9               M         clrf    COUNTER         ; as a counter
+0198   0103               M         clrw
+0199   0829               M loop_   movf    COUNTER, W
+019A   2???               M         call    Empty
+019B   3A00               M         xorlw   B'00000000'
+019C   1903               M         btfsc   STATUS, Z
+019D   2???               M         goto    end_
+019E   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+019F   0AA9               M         incf    COUNTER
+01A0   2???               M         goto    loop_
+01A1                      M end_    
+01A1   2???           00368         goto    $+2
+                      00369 DFull   Display Full
+  0000                    M         local   loop_
+  0000                    M         local   end_
+01A2   01A9               M         clrf    COUNTER         ; as a counter
+01A3   0103               M         clrw
+01A4   0829               M loop_   movf    COUNTER, W
+01A5   2???               M         call    Full
+01A6   3A00               M         xorlw   B'00000000'
+01A7   1903               M         btfsc   STATUS, Z
+01A8   2???               M         goto    end_
+01A9   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+01AA   0AA9               M         incf    COUNTER
+01AB   2???               M         goto    loop_
+01AC                      M end_    
+01AC   2???           00370         call    Wait_K          ; standby
+01AD   0837           00371         movf    NUM_B, W        ; compare counter and num of barrels
+01AE   0235           00372         subwf   COUNTB, W       ; if equal, go to done, otherwise increase
+01AF   1903           00373         btfsc   STATUS, Z       ; counter and loop
+01B0   2???           00374         goto    DDone
+01B1   0AB5           00375         incf    COUNTB, F
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01B2   2???           00376         goto    Disp_Loop
+01B3                  00377 DDone   
+                      00378         Display All_Done        ; That's all, folks.
+  0000                    M         local   loop_
+  0000                    M         local   end_
+01B3   01A9               M         clrf    COUNTER         ; as a counter
+01B4   0103               M         clrw
+01B5   0829               M loop_   movf    COUNTER, W
+01B6   2???               M         call    All_Done
+01B7   3A00               M         xorlw   B'00000000'
+01B8   1903               M         btfsc   STATUS, Z
+01B9   2???               M         goto    end_
+01BA   2???               M         call    WR_DATA
+Message[305]: Using default destination of 1 (file).
+01BB   0AA9               M         incf    COUNTER
+01BC   2???               M         goto    loop_
+01BD                      M end_    
+01BD                  00379 Endloop
+01BD   2???           00380         goto Endloop
+                      00381         
+                      00382 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00383         ; SUBROUTINES ;
+                      00384 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00385         
+                      00386         ; Standby
+01BE   1C86           00387 Wait_K  btfss   PORTB, 1        ; check for keypad signal (any key pressed)
+01BF   2???           00388         goto    Wait_K          ; if nothing loop
+01C0   0008           00389         return  
+                      00390 
+                      00391 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00392         ; Barrel Subroutine
+                      00393 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+01C1                  00394 Barrel_Sub  ; basically take a photo through the sensors and deposit the data
+01C1   108B           00395         bcf     INTCON, INTF    ; clear the external interrupt flag bit
+01C2   1383           00396         bcf     STATUS, IRP     ; making sure indirect addressing is bank 0
+01C3   0AB7           00397         incf    NUM_B, F        ; increment the number of barrels
+01C4   3037           00398         movlw   NUM_B           ; put the literal initial address in FSR
+01C5   0084           00399         movwf   FSR
+01C6   0D37           00400         rlf     NUM_B, W        ; add the number of barrels*2 to FSR
+01C7   0784           00401         addwf   FSR, F
+                      00402 ; Compute Distance ;;;;;;;;;;;;;;;;;;;;;;
+01C8   0822           00403         movf    T1CNTH, W       ; all to divide by 8 and fit into one byte
+01C9   00B0           00404         movwf   TEMP1
+01CA   0821           00405         movf    T1CNTL, W
+01CB   00B1           00406         movwf   TEMP2
+01CC   1003           00407         bcf     STATUS, C
+01CD   0CB0           00408         rrf     TEMP1, F
+01CE   0CB1           00409         rrf     TEMP2, F
+01CF   0CB0           00410         rrf     TEMP1, F
+01D0   0CB1           00411         rrf     TEMP2, F
+01D1   0CB0           00412         rrf     TEMP1, F
+01D2   0C31           00413         rrf     TEMP2, W        ; ends with time in secs in W
+                      00414         ; Multiplication Routine 
+01D3   0080           00415         movwf   INDF            ; put time into low byte
+01D4   3001           00416         movlw   SPEED           ; get cm/sec into W
+01D5   0A84           00417         incf    FSR, F
+01D6   0180           00418         clrf    INDF
+                      00419 
+01D7   01B0           00420         clrf    TEMP1
+01D8   15B0           00421         bsf     TEMP1,3
+01D9   0384           00422         decf    FSR, F
+01DA   0C80           00423         rrf     INDF,F
+01DB                  00424 Mult_Loop
+01DB   0A84           00425         incf    FSR, F
+01DC   1803           00426         btfsc   STATUS, C
+01DD   0780           00427         addwf   INDF,F
+                      00428         
+01DE   0C80           00429         rrf     INDF,F
+01DF   0384           00430         decf    FSR, F
+01E0   0C80           00431         rrf     INDF,F
+                      00432 
+Message[305]: Using default destination of 1 (file).
+01E1   0BB0           00433         decfsz TEMP1
+01E2   2???           00434         goto    Mult_Loop
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01E3   0A84           00435         incf    FSR, F      ; exit at high byte
+                      00436 ; Read and Save Sensors ;;;;;;;;;;;;;;;;;
+01E4   0805           00437         movf    PORTA, W    ; get sensors
+01E5   390F           00438         andlw   0x0F        ; avoid any weird connections
+Message[305]: Using default destination of 1 (file).
+01E6   0E80           00439         swapf   W           ; put the results in the top 4 bits of the high
+01E7   0480           00440         iorwf   INDF, F     ; register for this barrel
+01E8   1805           00441         btfsc   HEIGHT      ; if barrel is tall
+01E9   0AB6           00442         incf    NUM_TALL, F ; add to tall barrel tally
+01EA   0008           00443         return              ; done barrel subroutine
+                      00444         
+                      00445         
+                      00446 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00447         ; Column Subroutine
+                      00448 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+01EB                  00449 Column_Sub
+01EB   0008           00450         return
+                      00451 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00452         ; LCD Subroutines
+                      00453 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00454         
+                      00455 ; LCD Interfacing ;;;;;;;;;;;;;;;;;;
+01EC   1108           00456 WR_INS  bcf     RS              ; writes instructions to LCD, like clear
+01ED   00A5           00457         movwf   COM
+01EE   39F0           00458         andlw   0xF0
+01EF   0088           00459         movwf   PORTD
+01F0   1588           00460         bsf     E
+01F1   2???           00461         call    delay
+01F2   1188           00462         bcf     E
+01F3   0E25           00463         swapf   COM, W
+01F4   39F0           00464         andlw   0xF0
+01F5   0088           00465         movwf   PORTD
+01F6   1588           00466         bsf     E
+01F7   2???           00467         call    delay
+01F8   1188           00468         bcf     E
+01F9   2???           00469         call    delay
+01FA   0008           00470         return
+                      00471 
+01FB   1508           00472 WR_DATA bsf     RS              ; for writing ASCII to LCD
+01FC   00A6           00473         movwf   DAT
+01FD   0826           00474         movf    DAT, W
+01FE   39F0           00475         andlw   0xF0
+01FF   3E04           00476         addlw   4
+0200   0088           00477         movwf   PORTD
+0201   1588           00478         bsf     E
+0202   2???           00479         call    delay
+0203   1188           00480         bcf     E
+0204   0E26           00481         swapf   DAT, W
+0205   39F0           00482         andlw   0xF0
+0206   3E04           00483         addlw   4
+0207   0088           00484         movwf   PORTD
+0208   1588           00485         bsf     E
+0209   2???           00486         call    delay
+020A   1188           00487         bcf     E
+020B   0008           00488         return
+                      00489 
+020C                  00490 delay
+020C   304E           00491         movlw   0x4E            ; for use in LCD subroutines
+020D   00A7           00492         movwf   d1
+020E   3014           00493         movlw   0x14            ; modified this to make it faster
+020F   00A8           00494         movwf   d2
+0210                  00495 delay_0
+0210   0BA7           00496         decfsz  d1, F
+0211   2???           00497         goto    $+2
+0212   0BA8           00498         decfsz  d2, F
+0213   2???           00499         goto    delay_0
+                      00500         
+0214   2???           00501         goto    $+1
+0215   0000           00502         nop
+0216   0008           00503         return
+                      00504 
+                      00505 ; LCD Calculations ;;;;;;;;;;;;;;;;;;
+                      00506 #define NumL    TEMP1   ; define variables for this subroutine, reusability
+                      00507 #define NumH    TEMP2
+MPASM 5.65                         MOTOR.ASM   3-4-2016  9:23:34         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00508 #define Ones    TEMP3
+                      00509 #define Tens    TEMP4
+                      00510 #define Hund    TEMP5
+                      00511 
+0217                  00512 bin2dec999              ; binary to ascii conversion <999
+0217   0831           00513         movf NumH, w
+0218   3EF1           00514         addlw 241
+0219   0731           00515         addwf NumH, w
+021A   00B4           00516         movwf Hund      ;b_2 = 2a_2 - 15
+                      00517 
+021B   0734           00518         addwf Hund, w
+021C   0734           00519         addwf Hund, w
+021D   3EFD           00520         addlw 253
+021E   00B3           00521         movwf Tens
+021F   0E30           00522         swapf NumL, w
+0220   390F           00523         andlw 0x0F
+0221   07B3           00524         addwf Tens, f
+0222   07B3           00525         addwf Tens, f   ;b_1 = 6a_2 + 2a_1 - 48
+                      00526 
+0223   0731           00527         addwf NumH, w
+0224   3CFB           00528         sublw 251
+0225   00B2           00529         movwf Ones
+0226   07B2           00530         addwf Ones, f
+0227   07B2           00531         addwf Ones, f
+0228   07B2           00532         addwf Ones, f
+0229   0830           00533         movf NumL, w
+022A   390F           00534         andlw 0x0F
+022B   07B2           00535         addwf Ones, f   ;b_0 = a_0 - 4(a_2 + a_1) - 20
+                      00536 
+022C   300A           00537         movlw 10
+022D                  00538 bin2dec999a                     ;9 cycles max
+022D   07B2           00539         addwf Ones, f
+022E   03B3           00540         decf Tens, f
+022F   1C03           00541         btfss   STATUS, C
+0230   2???           00542          goto bin2dec999a
+                      00543 
+0231                  00544 bin2dec999b                     ;6 cycles max
+0231   07B3           00545         addwf Tens, f
+0232   03B4           00546         decf Hund, f
+0233   1C03           00547         btfss   STATUS, C
+0234   2???           00548          goto bin2dec999b
+                      00549 
+0235                  00550 bin2dec999c                     ;3 cycles max
+0235   07B4           00551         addwf Hund, f
+0236   1C03           00552         btfss   STATUS, C
+0237   2???           00553          goto bin2dec999c
+                      00554 
+0238   3030           00555         movlw   B'00110000'
+0239   04B4           00556         iorwf   Hund, F         ; my addition to make it actual ASCII
+023A   04B3           00557         iorwf   Tens, F
+023B   04B2           00558         iorwf   Ones, F
+023C   0008           00559         return
+                      00560 
+                      00561         
+                      00562 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00563         ; INTERRUPT HANDLER
+                      00564 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+023D   188B           00565 ISR     btfsc   INTCON, INTF    ; if interrupt came from barrel detection
+023E   2???           00566         call    Barrel_Sub      ; call the barrel subroutine
+023F   180B           00567         btfsc   INTCON, RBIF    ; if interrupt came from column
+0240   2???           00568         call    Column_Sub      ; call the column subroutine
+0241   0008           00569         return                  ; there shouldn't be another reason
+                      00570         
+                      00571 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00572         ; End of Program
+                      00573 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00574         
+3F32                  00575         end
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :    17 reported,     8 suppressed
+
+

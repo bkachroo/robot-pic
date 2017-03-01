@@ -1,0 +1,59 @@
+MPASM 5.65               SWITCHES_TESTER.ASM   2-20-2016  19:11:29         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001  
+                      00002         list P=PIC16F877, F=INHX8M, C=160, N=80, ST=OFF, MM=OFF, R=DEC
+                      00003         include "P16F877.INC"
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Dec 08 2015
+                      00005 ;  MPASM PIC16F877 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2015 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      00541         LIST
+2007   3F32           00004         __config ( _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_ON & _HS_OSC & _WRT_ENABLE_ON & _LVP_OFF & _DEBUG_OFF & _CPD_OFF )
+                      00005         errorlevel -302         ;ignore error when storing to bank1
+                      00006 
+                      00007         
+                      00008         org 0x0000
+0000   2???           00009         goto    Mainline
+                      00010 
+                      00011         org 0x0004 
+                      00012         ; normally save context here, but don't need to
+0004   2???           00013         goto Int_Handler
+                      00014         
+0005                  00015 Mainline
+                      00016         ; initialize stuff
+0005   1683           00017         bsf     STATUS, RP0 ; bank 1
+0006   1406           00018         bsf     TRISB, 0    ; Set RB0 as input
+0007   178B           00019         bsf     INTCON, GIE ; enable global interrupts
+0008   160B           00020         bsf     INTCON, INTE    ; enable RB0 interrupt
+                      00021         ; since RA1 is a AD input, we need to switch to digital
+                      00022         ;movlw  0x07        ; setting for all digital
+                      00023         ;movwf  ADCON1      ; change settings, also bank 1
+0009   1085           00024         bcf     TRISA, 1    ; Set RA1 as output
+000A   1283           00025         bcf     STATUS, RP0 ; bank 0
+                      00026         ; now loop
+000B                  00027 Mainloop
+000B   2???           00028         goto Mainloop       ; wait for interrupt
+                      00029         
+000C                  00030 Int_Handler
+000C   1C06           00031         btfss   PORTB, 0    ; if RB0 is high
+000D   2???           00032         goto    If_Low
+000E   1485           00033 If_High bsf     PORTA, 1    ; set RA1 high
+000F   2???           00034         goto    Done
+0010   1085           00035 If_Low  bcf     PORTA, 1    ; else set RA1 low
+0011   0009           00036 Done    retfie              ; return from interrupt
+3F32                  00037         END
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     2 suppressed
+
+

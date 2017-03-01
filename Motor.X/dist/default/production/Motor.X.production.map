@@ -1,0 +1,172 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Fri Mar 04 09:23:36 2016
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000002
+                   .cinit    romdata   0x000001    program   0x000004
+                   .org_1       code   0x000004    program   0x00047c
+.config_2007_BUILD/DEFAULT/PRODUCTION/MOTOR.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000002      
+                            0x000004    0x000241      
+                            0x002007    0x002007      
+            578 out of 8454 program addresses used, program memory utilization is 6%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 All_Done   0x000097    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Bar_Num   0x000030    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               Barrel_Sub   0x0001c1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    Centi   0x00006a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               Column_Sub   0x0001eb    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    DDone   0x0001b3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   DEmpty   0x000197    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    DFull   0x0001a2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   DShort   0x00017e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                Disp_Loop   0x00014c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 Distance   0x000066    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    Empty   0x000090    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Endloop   0x0001bd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Full   0x000082    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                      ISR   0x00023d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   In_Int   0x0000b0    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Init   0x0000a2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Main   0x0000c4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   Middle   0x000088    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                Mult_Loop   0x0001db    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   Optime   0x00000c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              Reset_Timer   0x0000c6    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Seconds   0x000028    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    Short   0x000079    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              Short_B_Num   0x000055    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Start_M   0x0000c2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Tall   0x000071    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               Tall_B_Num   0x000045    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  WR_DATA   0x0001fb    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   WR_INS   0x0001ec    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   Wait_K   0x0001be    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_00D1   0x0000d1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_017D   0x00017d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_0196   0x000196    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_01A1   0x0001a1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_0211   0x000211    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_0214   0x000214    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _10end_   0x000196    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _10loop_   0x00018e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _11end_   0x0001a1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _11loop_   0x000199    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _12end_   0x0001ac    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _12loop_   0x0001a4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _13end_   0x0001bd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _13loop_   0x0001b5    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _1end_   0x0000f8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _1loop_   0x0000f0    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _2end_   0x000108    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _2loop_   0x000100    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _3end_   0x000118    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _3loop_   0x000110    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _4end_   0x00012c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _4loop_   0x000124    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _5end_   0x000142    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _5loop_   0x00013a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _6end_   0x000161    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _6loop_   0x000159    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _7end_   0x000171    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _7loop_   0x000169    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _8end_   0x00017d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _8loop_   0x000175    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _9end_   0x000188    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _9loop_   0x000180    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               bin2dec999   0x000217    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              bin2dec999a   0x00022d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              bin2dec999b   0x000231    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              bin2dec999c   0x000235    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    delay   0x00020c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  delay_0   0x000210    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   Optime   0x00000c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Seconds   0x000028    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Bar_Num   0x000030    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               Tall_B_Num   0x000045    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              Short_B_Num   0x000055    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 Distance   0x000066    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    Centi   0x00006a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Tall   0x000071    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    Short   0x000079    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Full   0x000082    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   Middle   0x000088    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    Empty   0x000090    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 All_Done   0x000097    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Init   0x0000a2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   In_Int   0x0000b0    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Start_M   0x0000c2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                     Main   0x0000c4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              Reset_Timer   0x0000c6    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_00D1   0x0000d1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _1loop_   0x0000f0    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _1end_   0x0000f8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _2loop_   0x000100    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _2end_   0x000108    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _3loop_   0x000110    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _3end_   0x000118    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _4loop_   0x000124    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _4end_   0x00012c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _5loop_   0x00013a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _5end_   0x000142    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                Disp_Loop   0x00014c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _6loop_   0x000159    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _6end_   0x000161    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _7loop_   0x000169    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _7end_   0x000171    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _8loop_   0x000175    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_017D   0x00017d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _8end_   0x00017d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   DShort   0x00017e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _9loop_   0x000180    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   _9end_   0x000188    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _10loop_   0x00018e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_0196   0x000196    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _10end_   0x000196    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   DEmpty   0x000197    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _11loop_   0x000199    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _11end_   0x0001a1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_01A1   0x0001a1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    DFull   0x0001a2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _12loop_   0x0001a4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _12end_   0x0001ac    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    DDone   0x0001b3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                 _13loop_   0x0001b5    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  _13end_   0x0001bd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  Endloop   0x0001bd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   Wait_K   0x0001be    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               Barrel_Sub   0x0001c1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                Mult_Loop   0x0001db    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               Column_Sub   0x0001eb    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                   WR_INS   0x0001ec    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  WR_DATA   0x0001fb    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                    delay   0x00020c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                  delay_0   0x000210    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_0211   0x000211    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+             _.org_1_0214   0x000214    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+               bin2dec999   0x000217    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              bin2dec999a   0x00022d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              bin2dec999b   0x000231    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+              bin2dec999c   0x000235    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+                      ISR   0x00023d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Motor.X\Motor.asm
+
+

@@ -1,0 +1,204 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Mon Apr 04 15:34:01 2016
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000002
+                   .cinit    romdata   0x000001    program   0x000004
+                   .org_1       code   0x000004    program   0x000558
+.config_2007_BUILD/DEFAULT/PRODUCTION/TEST.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000002      
+                            0x000004    0x0002af      
+                            0x002007    0x002007      
+            688 out of 8454 program addresses used, program memory utilization is 8%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   A1Loop   0x000243    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   A2Loop   0x00024b    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   A3Loop   0x000256    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 All_Done   0x00007d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Bar_Num   0x00003c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             Barrel_Check   0x0000c9    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               Barrel_Sub   0x000205    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    Centi   0x00005a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             Column_Check   0x0000cc    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               Column_Sub   0x00023b    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    DDone   0x0001d5    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   DEmpty   0x0001bd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    DFull   0x0001c8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   DShort   0x0001a4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              Decrease_It   0x00022f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                Disp_Loop   0x00017c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 Distance   0x000058    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E1Loop   0x0000de    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E2Loop   0x0000e6    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E3Loop   0x0000e8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E4Loop   0x0000d5    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    Empty   0x000076    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               EndMessage   0x00001f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Endloop   0x0001e3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Exit_R   0x0000d1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             FirstMessage   0x00000c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Full   0x00006a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                      ISR   0x0002af    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   In_Int   0x0000b1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Init   0x000088    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    LSTOP   0x0001d2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Main   0x0000c2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Middle   0x000070    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                Mult_Loop   0x000221    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Optime   0x00002e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+          Overflow_Timer0   0x000203    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+          Overflow_Timer1   0x0001e7    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              Poll_Timer0   0x000200    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             Reset_Timer0   0x0001fd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Seconds   0x000036    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Sensing   0x000231    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    Short   0x000065    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              Short_B_Num   0x00004f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Start_M   0x0000be    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Tall   0x000060    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               Tall_B_Num   0x000047    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  WR_DATA   0x00026d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   WR_INS   0x00025e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Wait_K   0x0001e4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             _.org_1_0283   0x000283    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             _.org_1_0286   0x000286    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _10end_   0x0001ae    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _10loop_   0x0001a6    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _11end_   0x0001bc    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _11loop_   0x0001b4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _12end_   0x0001c7    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _12loop_   0x0001bf    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _13end_   0x0001d2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _13loop_   0x0001ca    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _14end_   0x0001e1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _14loop_   0x0001d9    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _1end_   0x0000b0    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _1loop_   0x0000a8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _2end_   0x000105    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _2loop_   0x0000fd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _3end_   0x000125    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _3loop_   0x00011d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _4end_   0x000135    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _4loop_   0x00012d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _5end_   0x000145    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _5loop_   0x00013d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _6end_   0x000159    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _6loop_   0x000151    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _7end_   0x00016f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _7loop_   0x000167    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _8end_   0x000197    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _8loop_   0x00018f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _9end_   0x0001a3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _9loop_   0x00019b    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               bin2dec999   0x000289    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              bin2dec999a   0x00029f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              bin2dec999b   0x0002a3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              bin2dec999c   0x0002a7    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    delay   0x00027e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  delay_0   0x000282    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+             FirstMessage   0x00000c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               EndMessage   0x00001f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Optime   0x00002e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Seconds   0x000036    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Bar_Num   0x00003c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               Tall_B_Num   0x000047    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              Short_B_Num   0x00004f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 Distance   0x000058    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    Centi   0x00005a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Tall   0x000060    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    Short   0x000065    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Full   0x00006a    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Middle   0x000070    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    Empty   0x000076    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 All_Done   0x00007d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Init   0x000088    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _1loop_   0x0000a8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _1end_   0x0000b0    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   In_Int   0x0000b1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Start_M   0x0000be    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                     Main   0x0000c2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             Barrel_Check   0x0000c9    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             Column_Check   0x0000cc    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Exit_R   0x0000d1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E4Loop   0x0000d5    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E1Loop   0x0000de    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E2Loop   0x0000e6    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   E3Loop   0x0000e8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _2loop_   0x0000fd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _2end_   0x000105    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _3loop_   0x00011d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _3end_   0x000125    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _4loop_   0x00012d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _4end_   0x000135    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _5loop_   0x00013d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _5end_   0x000145    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _6loop_   0x000151    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _6end_   0x000159    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _7loop_   0x000167    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _7end_   0x00016f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                Disp_Loop   0x00017c    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _8loop_   0x00018f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _8end_   0x000197    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _9loop_   0x00019b    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   _9end_   0x0001a3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   DShort   0x0001a4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _10loop_   0x0001a6    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _10end_   0x0001ae    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _11loop_   0x0001b4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _11end_   0x0001bc    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   DEmpty   0x0001bd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _12loop_   0x0001bf    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _12end_   0x0001c7    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    DFull   0x0001c8    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _13loop_   0x0001ca    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _13end_   0x0001d2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    LSTOP   0x0001d2    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    DDone   0x0001d5    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                 _14loop_   0x0001d9    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  _14end_   0x0001e1    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Endloop   0x0001e3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   Wait_K   0x0001e4    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+          Overflow_Timer1   0x0001e7    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             Reset_Timer0   0x0001fd    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              Poll_Timer0   0x000200    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+          Overflow_Timer0   0x000203    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               Barrel_Sub   0x000205    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                Mult_Loop   0x000221    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              Decrease_It   0x00022f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  Sensing   0x000231    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               Column_Sub   0x00023b    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   A1Loop   0x000243    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   A2Loop   0x00024b    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   A3Loop   0x000256    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                   WR_INS   0x00025e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  WR_DATA   0x00026d    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                    delay   0x00027e    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                  delay_0   0x000282    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             _.org_1_0283   0x000283    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+             _.org_1_0286   0x000286    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+               bin2dec999   0x000289    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              bin2dec999a   0x00029f    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              bin2dec999b   0x0002a3    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+              bin2dec999c   0x0002a7    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+                      ISR   0x0002af    program     static C:\Users\Bhareth Kachroo\MPLABXProjects\Test.X\Test.asm
+
+
